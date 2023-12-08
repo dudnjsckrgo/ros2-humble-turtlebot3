@@ -1,0 +1,26 @@
+version: '3'
+services:
+  master:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - TURTLEBOT3_MODEL=burger 
+      - ROS_DOMAIN_ID=10 
+    volumes:
+      - ./ROS2-Autonomous-Driving-and-Navigation-SLAM-with-TurtleBot3:/root/ros2_ws/src/
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    network_mode: host
+    stdin_open: true  # Docker 컨테이너에 표준 입력 열기
+    tty: true         # 가상 터미널 할당
+    deploy:  # deploy 섹션에 GPU 사용 설정 추가
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
